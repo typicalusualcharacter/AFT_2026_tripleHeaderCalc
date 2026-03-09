@@ -10,7 +10,7 @@
             --primary: #d32f2f;
             --dark: #050505;
             --card-odd: #1a1a1a;
-            --card-even: #252525; /* Distinct banding */
+            --card-even: #252525;
             --gold: #FFD700;
             --silver: #E0E0E0;
             --bronze: #CD7F32;
@@ -23,12 +23,20 @@
             display: flex;
         }
         
-        /* Layout Structure */
         .main-content {
             flex: 1;
             padding: 10px;
             padding-right: 75px; 
         }
+
+        /* Logo Styling */
+        .header-logo {
+            display: block;
+            margin: 0 auto 15px auto;
+            max-width: 180px;
+            height: auto;
+        }
+
         .sidebar {
             position: fixed;
             right: 0;
@@ -41,9 +49,10 @@
             gap: 10px;
             padding: 10px 5px;
             border-left: 1px solid #333;
+            z-index: 100;
         }
 
-        /* Rider Cards with Banding */
+        /* Rider Cards with Heavy Banding */
         .rider-card {
             border-radius: 8px;
             padding: 12px 10px;
@@ -76,10 +85,8 @@
             background: var(--primary);
             padding: 4px 8px;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Input Grid */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -92,12 +99,11 @@
             text-align: center;
             margin-bottom: 4px;
             font-weight: bold;
-            text-transform: uppercase;
         }
         select.pos-input {
             width: 100%;
             padding: 10px 2px;
-            font-size: 1.2rem; /* Large touch target */
+            font-size: 1.2rem;
             background: #333;
             color: white;
             border: 2px solid #555;
@@ -111,7 +117,7 @@
         .pos-bronze { background-color: var(--bronze) !important; color: #fff !important; font-weight: bold; }
 
         /* Standings Results */
-        .results-area { margin-top: 20px; border-top: 3px solid var(--primary); padding-top: 15px; }
+        .results-area { margin-top: 20px; border-top: 3px solid var(--primary); padding-top: 15px; padding-bottom: 40px;}
         .res-row {
             display: flex;
             justify-content: space-between;
@@ -126,14 +132,14 @@
         .res-row.bronze { background: var(--bronze); color: #fff; }
         .res-row.standard { background: #333; color: #fff; }
 
-        /* Buttons - Larger Font */
+        /* Sidebar Buttons */
         .side-btn {
             width: 100%;
             height: 70px;
             border: none;
             border-radius: 8px;
             font-weight: 900;
-            font-size: 0.9rem; /* Increased font size by ~0.5 relative to old */
+            font-size: 0.9rem;
             cursor: pointer;
             text-transform: uppercase;
             display: flex;
@@ -149,6 +155,8 @@
 <body>
 
 <div class="main-content">
+    <img src="https://www.americanflattrack.com/themes/amaproracing/assets/images/logos/progressive-logo.png" alt="AFT Logo" class="header-logo">
+    
     <div id="riderInputs"></div>
     <div id="results" class="results-area"></div>
 </div>
@@ -159,7 +167,9 @@
 </div>
 
 <script>
+    // Rider list in your original order
     const riders = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
+    
     const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
 
     function init() {
@@ -169,8 +179,8 @@
                 <div class="rider-card">
                     <div class="rider-header">
                         <select class="rider-name-select" id="rider-${i}">
-                            <option value="">RIDER ${i}</option>
-                            ${riders.sort().map(r => `<option value="${r}">${r}</option>`).join('')}
+                            <option value="">SELECT RIDER ${i}</option>
+                            ${riders.map(r => `<option value="${r}">${r}</option>`).join('')}
                         </select>
                         <span class="live-points" id="live-${i}">0 pts</span>
                     </div>
@@ -220,7 +230,7 @@
         results.sort((a, b) => b.total !== a.total ? b.total - a.total : a.r3Finish - b.r3Finish);
 
         const resDiv = document.getElementById('results');
-        let html = '<h3 style="text-align:center; color:var(--primary); margin:0 0 10px 0;">FINAL STANDINGS</h3>';
+        let html = '<h3 style="text-align:center; color:white; margin:0 0 10px 0;">OVERALL TRIPLE CHALLENGE RANK</h3>';
         results.forEach((r, idx) => {
             let medalClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : 'standard';
             html += `<div class="res-row ${medalClass}"><span>${idx+1}. ${r.name}</span><span>${r.total} pts</span></div>`;
@@ -230,7 +240,7 @@
     }
 
     function resetAll() {
-        if(confirm("Wipe all data?")) location.reload();
+        if(confirm("Wipe all data for this class?")) location.reload();
     }
 
     init();
