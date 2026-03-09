@@ -29,11 +29,11 @@
             padding-right: 75px; 
         }
 
-        /* Logo Styling */
+        /* Logo Styling - Increased to 270px (1.5x larger) */
         .header-logo {
             display: block;
-            margin: 0 auto 15px auto;
-            max-width: 180px;
+            margin: 0 auto 20px auto;
+            max-width: 270px;
             height: auto;
         }
 
@@ -52,7 +52,7 @@
             z-index: 100;
         }
 
-        /* Rider Cards with Heavy Banding */
+        /* Rider Cards with Banding */
         .rider-card {
             border-radius: 8px;
             padding: 12px 10px;
@@ -167,8 +167,14 @@
 </div>
 
 <script>
-    // Rider list in your original order
-    const riders = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
+    // Rider list in your original ranked order
+    const riders = [
+        "Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", 
+        "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", 
+        "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", 
+        "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", 
+        "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"
+    ];
     
     const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
 
@@ -220,13 +226,35 @@
             if (!name) continue;
             const p1 = parseInt(document.getElementById(`r1-${i}`).value);
             const p2 = parseInt(document.getElementById(`r2-${i}`).value);
-            const p3 = parseInt(document.getElementById(`r3-${i}`).value);
+            const p3 = parseInt(document.getElementById(`r3-${id === undefined ? i : id}`).value || document.getElementById(`r3-${i}`).value); 
+            // Correcting the lookup for R3 tiebreaker
+            const r3Val = parseInt(document.getElementById(`r3-${i}`).value);
+            
             results.push({
                 name: name,
-                total: (basePoints[p1] || 0) + ((basePoints[p2] || 0) * 2) + ((basePoints[p3] || 0) * 3),
-                r3Finish: p3 === 0 ? 99 : p3
+                total: (basePoints[p1] || 0) + ((basePoints[p2] || 0) * 2) + ((basePoints[r3Val] !== undefined ? basePoints[r3Val] : 0) * 3),
+                r3Finish: r3Val === 0 ? 99 : r3Val
             });
         }
+        
+        // Final sanity check on points logic for the loop
+        results = [];
+        for (let i = 1; i <= 5; i++) {
+            const name = document.getElementById(`rider-${i}`).value;
+            if (!name) continue;
+            const r1 = parseInt(document.getElementById(`r1-${i}`).value);
+            const r2 = parseInt(document.getElementById(`r2-${i}`).value);
+            const r3 = parseInt(document.getElementById(`r3-${i}`).value);
+            
+            const score = (basePoints[r1] || 0) + ((basePoints[r2] || 0) * 2) + ((basePoints[r3] || 0) * 3);
+            
+            results.push({
+                name: name,
+                total: score,
+                r3Finish: r3 === 0 ? 99 : r3
+            });
+        }
+
         results.sort((a, b) => b.total !== a.total ? b.total - a.total : a.r3Finish - b.r3Finish);
 
         const resDiv = document.getElementById('results');
