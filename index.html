@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>AFT Triple Challenge 2026</title>
+    <title>TC 2026</title>
     <style>
         :root {
             --primary: #d32f2f;
-            --dark: #0a0a0a;
-            --card-bg: #1a1a1a;
-            --stripe: #222;
+            --dark: #050505;
+            --card-odd: #1a1a1a;
+            --card-even: #252525; /* Distinct banding */
             --gold: #FFD700;
             --silver: #E0E0E0;
             --bronze: #CD7F32;
-            --text-gold: #000; /* Black text on gold for readability */
         }
         body {
             font-family: -apple-system, system-ui, sans-serif;
@@ -28,121 +27,123 @@
         .main-content {
             flex: 1;
             padding: 10px;
-            padding-right: 70px; /* Space for buttons */
+            padding-right: 75px; 
         }
         .sidebar {
             position: fixed;
             right: 0;
             top: 0;
             bottom: 0;
-            width: 65px;
+            width: 70px;
             background: #000;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding: 10px 4px;
+            gap: 10px;
+            padding: 10px 5px;
             border-left: 1px solid #333;
         }
 
-        /* Rider Cards */
+        /* Rider Cards with Banding */
         .rider-card {
-            background: var(--card-bg);
             border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 5px;
+            padding: 12px 10px;
+            margin-bottom: 6px;
             border: 1px solid #333;
         }
-        .rider-card:nth-child(even) { background: var(--stripe); }
+        .rider-card:nth-child(odd) { background: var(--card-odd); }
+        .rider-card:nth-child(even) { background: var(--card-even); border-left: 4px solid #444; }
         
         .rider-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .rider-name-select {
-            width: 65%;
-            font-size: 1.1rem; /* Increased font size */
-            background: #333;
+            width: 68%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: #000;
             color: white;
-            border: 1px solid #444;
-            padding: 5px;
+            border: 1px solid #555;
+            padding: 6px;
             border-radius: 4px;
         }
         .live-points {
-            font-weight: 800;
+            font-weight: 900;
             color: #fff;
             font-size: 1rem;
             background: var(--primary);
-            padding: 3px 8px;
+            padding: 4px 8px;
             border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         /* Input Grid */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
+            gap: 8px;
         }
         .input-group label {
             display: block;
             font-size: 0.75rem;
-            color: #aaa;
+            color: #ccc;
             text-align: center;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             font-weight: bold;
+            text-transform: uppercase;
         }
         select.pos-input {
             width: 100%;
-            padding: 8px 2px;
-            font-size: 1.1rem; /* Increased font size for readability */
-            background: #2a2a2a;
+            padding: 10px 2px;
+            font-size: 1.2rem; /* Large touch target */
+            background: #333;
             color: white;
-            border: 2px solid #444;
+            border: 2px solid #555;
             border-radius: 6px;
             text-align: center;
-            transition: all 0.2s;
         }
 
-        /* Dynamic Podium Colors for Inputs */
-        .pos-gold { background-color: var(--gold) !important; color: #000 !important; border-color: #fff !important; }
-        .pos-silver { background-color: var(--silver) !important; color: #000 !important; border-color: #fff !important; }
-        .pos-bronze { background-color: var(--bronze) !important; color: #fff !important; border-color: #fff !important; }
+        /* Podium Colors */
+        .pos-gold { background-color: var(--gold) !important; color: #000 !important; font-weight: bold; }
+        .pos-silver { background-color: var(--silver) !important; color: #000 !important; font-weight: bold; }
+        .pos-bronze { background-color: var(--bronze) !important; color: #fff !important; font-weight: bold; }
 
-        /* Standings Results Styling */
-        .results-area { margin-top: 20px; border-top: 2px solid #333; padding-top: 15px; }
+        /* Standings Results */
+        .results-area { margin-top: 20px; border-top: 3px solid var(--primary); padding-top: 15px; }
         .res-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
-            margin-bottom: 4px;
+            padding: 12px;
+            margin-bottom: 5px;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: bold;
-            background: #222;
         }
-        .res-row.gold { background: var(--gold); color: #000; border: 2px solid #fff; }
-        .res-row.silver { background: var(--silver); color: #000; border: 2px solid #fff; }
-        .res-row.bronze { background: var(--bronze); color: #fff; border: 2px solid #fff; }
+        .res-row.gold { background: var(--gold); color: #000; }
+        .res-row.silver { background: var(--silver); color: #000; }
+        .res-row.bronze { background: var(--bronze); color: #fff; }
+        .res-row.standard { background: #333; color: #fff; }
 
-        /* Buttons - Horizontal Text, Small Size */
+        /* Buttons - Larger Font */
         .side-btn {
             width: 100%;
-            height: 60px;
+            height: 70px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 900;
-            font-size: 0.65rem; /* Smaller text to fit horizontal */
+            font-size: 0.9rem; /* Increased font size by ~0.5 relative to old */
             cursor: pointer;
             text-transform: uppercase;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 2px;
+            line-height: 1.1;
         }
-        .calc-btn { background: #2e7d32; color: white; border-bottom: 4px solid #1b5e20; }
-        .reset-btn { background: #d32f2f; color: white; border-bottom: 4px solid #b71c1c; }
+        .calc-btn { background: #2e7d32; color: white; border-bottom: 5px solid #1b5e20; }
+        .reset-btn { background: #b71c1c; color: white; border-bottom: 5px solid #7f0000; }
     </style>
 </head>
 <body>
@@ -153,8 +154,8 @@
 </div>
 
 <div class="sidebar">
-    <button class="side-btn calc-btn" onclick="calculateResults()">CALC<br>SCORES</button>
-    <button class="side-btn reset-btn" onclick="resetAll()">RESET<br>ALL</button>
+    <button class="side-btn calc-btn" onclick="calculateResults()">CALC<br>RANK</button>
+    <button class="side-btn reset-btn" onclick="resetAll()">CLR<br>ALL</button>
 </div>
 
 <script>
@@ -168,15 +169,15 @@
                 <div class="rider-card">
                     <div class="rider-header">
                         <select class="rider-name-select" id="rider-${i}">
-                            <option value="">Rider ${i}...</option>
-                            ${riders.map(r => `<option value="${r}">${r}</option>`).join('')}
+                            <option value="">RIDER ${i}</option>
+                            ${riders.sort().map(r => `<option value="${r}">${r}</option>`).join('')}
                         </select>
                         <span class="live-points" id="live-${i}">0 pts</span>
                     </div>
                     <div class="grid">
                         ${[1, 2, 3].map(raceNum => `
                             <div class="input-group">
-                                <label>RACE ${raceNum}</label>
+                                <label>R${raceNum}</label>
                                 <select class="pos-input" id="r${raceNum}-${i}" onchange="updateLive(${i}, this)">
                                     <option value="0">-</option>
                                     ${Array.from({length: 17}, (_, idx) => `<option value="${idx+1}">${idx+1}</option>`).join('')}
@@ -190,7 +191,6 @@
     }
 
     function updateLive(id, element) {
-        // Handle Coloring of the select box
         element.classList.remove('pos-gold', 'pos-silver', 'pos-bronze');
         if (element.value == "1") element.classList.add('pos-gold');
         if (element.value == "2") element.classList.add('pos-silver');
@@ -220,9 +220,9 @@
         results.sort((a, b) => b.total !== a.total ? b.total - a.total : a.r3Finish - b.r3Finish);
 
         const resDiv = document.getElementById('results');
-        let html = '<h3 style="text-align:center; color:var(--gold); margin:0 0 10px 0;">FINAL STANDINGS</h3>';
+        let html = '<h3 style="text-align:center; color:var(--primary); margin:0 0 10px 0;">FINAL STANDINGS</h3>';
         results.forEach((r, idx) => {
-            let medalClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : '';
+            let medalClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : 'standard';
             html += `<div class="res-row ${medalClass}"><span>${idx+1}. ${r.name}</span><span>${r.total} pts</span></div>`;
         });
         resDiv.innerHTML = html;
@@ -230,9 +230,7 @@
     }
 
     function resetAll() {
-        if(confirm("Clear all data?")) {
-            location.reload(); // Simple way to reset everything perfectly
-        }
+        if(confirm("Wipe all data?")) location.reload();
     }
 
     init();
