@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>AFT Triple Challenge Calc</title>
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --dark: #1a1a1a;
+            --light: #f4f4f4;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 { text-align: center; color: var(--primary); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .rider-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-left: 5px solid var(--primary);
+        }
+        
+        label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #aaa; font-weight: bold; }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #333;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 8px;
+            font-size: 1rem;
+            -webkit-appearance: none;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        #results {
+            margin-top: 25px;
+            width: 100%;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            background: #333;
+            padding: 12px;
+            margin-bottom: 5px;
+            border-radius: 6px;
+        }
+        .rank { font-weight: bold; color: var(--primary); width: 30px; }
+        .name { flex-grow: 1; margin-left: 10px; }
+        .points { font-weight: bold; }
+        .tiebreaker { font-size: 0.7rem; color: #888; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Triple Challenge Calc</h2>
+    
+    <div id="riderInputs"></div>
+
+    <button onclick="calculateResults()">CALCULATE STANDINGS</button>
+
+    <div id="results"></div>
+</div>
+
+<script>
+    const riders = [
+        "Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", 
+        "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", 
+        "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", 
+        "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", 
+        "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"
+    ];
+
+    const basePoints = {
+        1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 
+        9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1
+    };
+
+    function init() {
+        const container = document.getElementById('riderInputs');
+        for (let i = 1; i <= 5; i++) {
+            container.innerHTML += `
+                <div class="rider-card">
+                    <label>RIDER ${i}</label>
+                    <select id="rider-${i}">
+                        <option value="">Select Rider...</option>
+                        ${riders.map(r => `<option value="${r}">${r}</option>`).join('')}
+                    </select>
+                    <div class="grid">
+                        <div>
+                            <label>RACE 1 (1x)</label>
+                            <select id="r1-${i}">${getPositionOptions()}</select>
+                        </div>
+                        <div>
+                            <label>RACE 2 (2x)</label>
+                            <select id="r2-${i}">${getPositionOptions()}</select>
+                        </div>
+                        <div>
+                            <label>RACE 3 (3x)</label>
+                            <select id="r3-${i}">${getPositionOptions()}</select>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function getPositionOptions() {
+        let options = '<option value="0">DNS</option>';
+        for (let i = 1; i <= 17; i++) {
+            options += `<option value="${i}">${i}${getOrdinal(i)}</option>`;
+        }
+        return options;
+    }
+
+    function getOrdinal(n) {
+        let s = ["th", "st", "nd", "rd"], v = n % 100;
+        return (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+
+    function calculateResults() {
+        let results = [];
+        for (let i = 1; i <= 5; i++) {
+            const name = document.getElementById(`rider-${i}`).value;
+            if (!name) continue;
+
+            const p1 = parseInt(document.getElementById(`r1-${i}`).value);
+            const p2 = parseInt(document.getElementById(`r2-${i}`).value);
+            const p3 = parseInt(document.getElementById(`r3-${i}`).value);
+
+            const score1 = basePoints[p1] || 0;
+            const score2 = (basePoints[p2] || 0) * 2;
+            const score3 = (basePoints[p3] || 0) * 3;
+
+            results.push({
+                name: name,
+                total: score1 + score2 + score3,
+                r3Finish: p3 === 0 ? 99 : p3 // For tie-breaking (lower is better)
+            });
+        }
+
+        // Sorting: High points first. If tie, lower Race 3 finish wins.
+        results.sort((a, b) => {
+            if (b.total !== a.total) return b.total - a.total;
+            return a.r3Finish - b.r3Finish;
+        });
+
+        displayResults(results);
+    }
+
+    function displayResults(data) {
+        const resDiv = document.getElementById('results');
+        if (data.length === 0) {
+            resDiv.innerHTML = "";
+            return;
+        }
+        
+        let html = "<h3>OVERALL STANDINGS</h3>";
+        data.forEach((r, index) => {
+            html += `
+                <div class="result-row">
+                    <span class="rank">#${index + 1}</span>
+                    <span class="name">${r.name} <span class="tiebreaker">(R3: ${r.r3Finish === 99 ? 'DNS' : r.r3Finish})</span></span>
+                    <span class="points">${r.total} pts</span>
+                </div>
+            `;
+        });
+        resDiv.innerHTML = html;
+        resDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    init();
+</script>
+
+</body>
+</html>
