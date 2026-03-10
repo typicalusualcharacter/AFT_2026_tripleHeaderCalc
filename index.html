@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="triple_challenge.png">
+    
+    <link rel="apple-touch-icon" href="TRIPchallenge_2.png">
+    
     <title>AFT TC 2026</title>
     <style>
         :root {
@@ -39,6 +41,7 @@
             height: auto;
         }
 
+        /* Tab Container */
         .tab-container {
             display: flex;
             width: 100%;
@@ -140,9 +143,8 @@
             color: white;
             border: 2px solid #555;
             border-radius: 6px;
-            /* UPDATED: Centering text for both standard and iOS */
             text-align: center;
-            text-align-last: center;
+            text-align-last: center; /* Ensures centering on iOS Safari */
         }
 
         .pos-gold { background-color: var(--gold) !important; color: #000 !important; font-weight: bold; }
@@ -279,7 +281,6 @@
         }
         results.sort((a, b) => b.total !== a.total ? b.total - a.total : a.r3Finish - b.r3Finish);
         const resDiv = document.getElementById('results');
-        /* UPDATED: Added "Unofficial" to header */
         let html = `<h3 style="text-align:center; color:white; margin:0 0 10px 0; text-transform: uppercase; font-style: italic;">Unofficial Final ${currentClass} Rank</h3>`;
         results.forEach((r, idx) => {
             let medalClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : 'standard';
