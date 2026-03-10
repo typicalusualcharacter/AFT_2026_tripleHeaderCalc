@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="triple challenge.png">
+    <link rel="apple-touch-icon" href="triple_challenge.png">
     <title>AFT TC 2026</title>
     <style>
         :root {
@@ -32,7 +32,6 @@
             padding-top: 10px;
         }
 
-        /* Logo Styling - 1.5x larger scale */
         .header-logo {
             display: block;
             margin: 0 auto 15px auto;
@@ -40,7 +39,6 @@
             height: auto;
         }
 
-        /* Tab Styling - Font one size larger (1.2rem) */
         .tab-container {
             display: flex;
             width: 100%;
@@ -58,7 +56,6 @@
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
         .tab-container button.active {
             background-color: var(--primary);
@@ -176,7 +173,7 @@
 <body>
 
 <div class="main-content">
-    <img src="triple challenge.png" alt="AFT Triple Challenge Logo" class="header-logo">
+    <img src="triple_challenge.png" alt="AFT Triple Challenge Logo" class="header-logo">
     
     <div class="tab-container">
         <button id="superTwinsTab" class="active" onclick="switchClass('SuperTwins')">SuperTwins</button>
@@ -193,13 +190,10 @@
 </div>
 
 <script>
-    // Rider lists in requested order
     const superTwinsRiders = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
     const singlesRiders = ["Tom Drane", "Bradon Pfanders", "Chase Saathoff", "Trevor Brunner", "Kage Tadman", "Justin Jones", "Jack Brucks", "Logan Eisenhard", "Tarren Santero", "Ryder Reese", "Jordan Beaulac", "Jared Lowe", "Jaymes Arnaiz", "Walker Porter", "Travis Petton", "Skylar Sentell", "Aaden Savage", "Evan Kelleher", "Matt Beland", "Jordan Jean", "Bronson Pearce"];
     
-    // 2025 Points Distribution
     const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
-
     let currentClass = 'SuperTwins';
 
     function generateRiderInputs() {
@@ -237,7 +231,7 @@
         document.getElementById('superTwinsTab').classList.toggle('active', className === 'SuperTwins');
         document.getElementById('singlesTab').classList.toggle('active', className === 'Singles');
         generateRiderInputs();
-        document.getElementById('results').innerHTML = ''; // Clear results on switch
+        document.getElementById('results').innerHTML = '';
     }
 
     function updateLive(id, element) {
@@ -245,7 +239,6 @@
         if (element.value == "1") element.classList.add('pos-gold');
         if (element.value == "2") element.classList.add('pos-silver');
         if (element.value == "3") element.classList.add('pos-bronze');
-
         const p1 = parseInt(document.getElementById(`r1-${id}`).value);
         const p2 = parseInt(document.getElementById(`r2-${id}`).value);
         const p3 = parseInt(document.getElementById(`r3-${id}`).value);
@@ -268,7 +261,6 @@
             });
         }
         results.sort((a, b) => b.total !== a.total ? b.total - a.total : a.r3Finish - b.r3Finish);
-
         const resDiv = document.getElementById('results');
         let html = `<h3 style="text-align:center; color:white; margin:0 0 10px 0;">Final ${currentClass} Rank</h3>`;
         results.forEach((r, idx) => {
