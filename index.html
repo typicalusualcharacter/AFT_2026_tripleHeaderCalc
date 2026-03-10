@@ -159,7 +159,7 @@
         document.getElementById(`live-${id}`).innerText = `${total} pts`;
     }
 
-    function calculateResults() {
+function calculateResults() {
         let results = [];
         for (let i = 1; i <= 5; i++) {
             const name = document.getElementById(`rider-${i}`).value;
@@ -167,20 +167,34 @@
             const p1 = parseInt(document.getElementById(`r1-${i}`).value);
             const p2 = parseInt(document.getElementById(`r2-${i}`).value);
             const p3 = parseInt(document.getElementById(`r3-${i}`).value);
-            results.push({ name, total: (basePoints[p1]||0)+((basePoints[p2]||0)*2)+((basePoints[p3]||0)*3), r3: p3||99 });
+            results.push({ 
+                name, 
+                total: (basePoints[p1]||0) + ((basePoints[p2]||0)*2) + ((basePoints[p3]||0)*3), 
+                r3: p3||99 
+            });
         }
+        
+        // Sort: Total points descending, then Race 3 finish position ascending
         results.sort((a,b) => b.total - a.total || a.r3 - b.r3);
-        let h = `<h3 style="text-align:center; color:white; margin-bottom:10px;">Unofficial Rank</h3>`;
+        
+        const resDiv = document.getElementById('results');
+        let h = `<h3 style="text-align:center; color:white; margin-bottom:10px; text-transform: uppercase; font-style: italic;">Unofficial Final Results</h3>`;
+        
         results.forEach((r, idx) => {
             let m = idx===0?'gold':idx===1?'silver':idx===2?'bronze':'standard';
             h += `<div class="res-row ${m}"><span>${idx+1}. ${r.name}</span><span>${r.total} pts</span></div>`;
         });
-        document.getElementById('results').innerHTML = h;
+        
+        resDiv.innerHTML = h;
+
+        // getting unofficial results in view
+        resDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
     function resetAll() { if(confirm("Clear?")) { generateRiderInputs(); document.getElementById('results').innerHTML = ''; } }
 </script>
 </body>
 </html>
+
 
 
