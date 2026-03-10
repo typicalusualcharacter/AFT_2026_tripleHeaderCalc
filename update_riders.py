@@ -14,39 +14,29 @@ def get_riders(url):
         response = requests.get(url, headers=headers, timeout=15)
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # AFT Standings tables use <td> with class "rider" or "rider-name"
-        # We find all cells that are likely to contain names
-        cells = soup.find_all('td', class_=['rider', 'rider-name', 'views-field-field-rider-name'])
+        # Target only the cells within the table body to avoid headers
+        table = soup.find('table')
+        if not table: return None
+        
+        tbody = table.find('tbody')
+        cells = tbody.find_all('td', class_=['rider', 'rider-name', 'views-field-field-rider-name']) if tbody else []
         
         names = []
         for cell in cells:
             name = cell.get_text(strip=True)
-            if name and name not in names:
+            # Filter out known header text or empty strings
+            if name and name.lower() != "rider(s)" and name not in names:
                 names.append(name)
         
-        # If the above fails, try a broader search for table rows
-        if not names:
-            rows = soup.find_all('tr')
-            for row in rows:
-                # Typically the rider name is in the second or third column
-                cols = row.find_all('td')
-                if len(cols) > 1:
-                    name = cols[1].get_text(strip=True) # Usually index 1 or 2
-                    if name and not name.isdigit() and len(name) > 3:
-                        names.append(name)
-
         return names if names else None
     except Exception as e:
         print(f"Error: {e}")
         return None
 
-st_names = get_riders(urls["SuperTwins"])
-si_names = get_riders(urls["Singles"])
-
 data = {
     "last_updated": datetime.now().strftime("%m/%d/%Y %I:%M %p"),
-    "SuperTwins": st_names,
-    "Singles": si_names
+    "SuperTwins": get_riders(urls["SuperTwins"]),
+    "Singles": get_riders(urls["Singles"])
 }
 
 with open('riders.json', 'w') as f:
