@@ -39,26 +39,39 @@
             height: auto;
         }
 
+        /* Tab Container Styling */
         .tab-container {
             display: flex;
             width: 100%;
             margin-bottom: 20px;
             border: 1px solid #333;
-            border-radius: 6px;
+            border-radius: 8px;
             overflow: hidden;
+            background-color: #111;
         }
         .tab-container button {
             flex: 1;
-            background-color: #111;
-            color: white;
+            background-color: transparent;
             border: none;
-            padding: 12px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 10px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            opacity: 0.5; /* Dim inactive tab */
         }
         .tab-container button.active {
-            background-color: var(--primary);
+            background-color: #222;
+            opacity: 1;
+            border-bottom: 4px solid var(--primary);
+        }
+        
+        /* Tab Image Scaling */
+        .tab-img {
+            max-height: 45px;
+            max-width: 100%;
+            object-fit: contain;
         }
 
         .sidebar {
@@ -176,8 +189,12 @@
     <img src="triple_challenge.png" alt="AFT Triple Challenge Logo" class="header-logo">
     
     <div class="tab-container">
-        <button id="superTwinsTab" class="active" onclick="switchClass('SuperTwins')">SuperTwins</button>
-        <button id="singlesTab" onclick="switchClass('Singles')">Singles</button>
+        <button id="superTwinsTab" class="active" onclick="switchClass('SuperTwins')">
+            <img src="MISSION_AFT_SUPERTWINS_2024.png" class="tab-img" alt="SuperTwins">
+        </button>
+        <button id="singlesTab" onclick="switchClass('Singles')">
+            <img src="Kicker-AFT-Singles-Logo.png" class="tab-img" alt="Singles">
+        </button>
     </div>
     
     <div id="riderInputs"></div>
