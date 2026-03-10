@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="apple-touch-icon" href="TRIPchallenge_2.png">
-    
+    <link rel="apple-touch-icon" href="TRIPchallenge_3.png">
     <title>AFT TC 2026</title>
     <style>
         :root {
@@ -25,6 +23,7 @@
             color: white;
             margin: 0;
             display: flex;
+            overflow-x: hidden;
         }
         
         .main-content {
@@ -41,7 +40,6 @@
             height: auto;
         }
 
-        /* Tab Container */
         .tab-container {
             display: flex;
             width: 100%;
@@ -70,7 +68,7 @@
         }
         
         .tab-img {
-            max-height: 45px;
+            max-height: 40px;
             max-width: 100%;
             object-fit: contain;
         }
@@ -144,7 +142,7 @@
             border: 2px solid #555;
             border-radius: 6px;
             text-align: center;
-            text-align-last: center; /* Ensures centering on iOS Safari */
+            text-align-last: center;
         }
 
         .pos-gold { background-color: var(--gold) !important; color: #000 !important; font-weight: bold; }
@@ -183,9 +181,46 @@
         }
         .calc-btn { background: #2e7d32; color: white; border-bottom: 5px solid #1b5e20; }
         .reset-btn { background: #b71c1c; color: white; border-bottom: 5px solid #7f0000; }
+        .info-btn { background: #444; color: white; border-bottom: 5px solid #222; font-size: 1.5rem; }
+
+        #infoModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .close-modal {
+            position: absolute;
+            top: -40px; right: 0;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+
+<div id="infoModal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="toggleModal()">&times;</span>
+        <img src="tripChallenge_explained.jpg" alt="Rules Explanation">
+    </div>
+</div>
 
 <div class="main-content">
     <img src="triple_challenge.png" alt="AFT Triple Challenge Logo" class="header-logo">
@@ -206,6 +241,7 @@
 <div class="sidebar">
     <button class="side-btn calc-btn" onclick="calculateResults()">CALC<br>RANK</button>
     <button class="side-btn reset-btn" onclick="resetAll()">CLR<br>ALL</button>
+    <button class="side-btn info-btn" onclick="toggleModal()">i</button>
 </div>
 
 <script>
@@ -219,6 +255,7 @@
         const riderList = currentClass === 'Singles' ? singlesRiders : superTwinsRiders;
         const container = document.getElementById('riderInputs');
         container.innerHTML = ''; 
+        // Reverted back to 5 rider slots
         for (let i = 1; i <= 5; i++) {
             container.innerHTML += `
                 <div class="rider-card">
@@ -251,6 +288,11 @@
         document.getElementById('singlesTab').classList.toggle('active', className === 'Singles');
         generateRiderInputs();
         document.getElementById('results').innerHTML = '';
+    }
+
+    function toggleModal() {
+        const modal = document.getElementById('infoModal');
+        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
     }
 
     function updateLive(id, element) {
