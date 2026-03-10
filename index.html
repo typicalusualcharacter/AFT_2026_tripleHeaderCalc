@@ -247,12 +247,12 @@
 </div>
 
 <script>
-    // FALLBACK LISTS (Used if the scraper fails)
-    const fallbackSuperTwins = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Briar Bauman", "Brandon Robinson", "Sammy Halbert", "Aidan RoosEvans", "Jarod Vanderkooi", "Bronson Bauman", "Kolby Carlile", "Sam Lowe"];
-    const fallbackSingles = ["Tom Drane", "Chase Saathoff", "Trevor Brunner", "Jack Brucks", "Logan Eisenhard", "Justin Jones", "Jordan Beaulac", "Bradon Pfanders", "Kage Tadman", "Ryder Reese", "Jaymes Arnaiz", "Travis Petton"];
+    const fallbackST = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
+    const fallbackSI = ["Tom Drane", "Bradon Pfanders", "Chase Saathoff", "Trevor Brunner", "Kage Tadman", "Justin Jones", "Jack Brucks", "Logan Eisenhard", "Tarren Santero", "Ryder Reese", "Jordan Beaulac", "Jared Lowe", "Jaymes Arnaiz", "Walker Porter", "Travis Petton", "Skylar Sentell", "Aaden Savage", "Evan Kelleher", "Matt Beland", "Jordan Jean", "Bronson Pearce"];
 
     let superTwinsRiders = [];
     let singlesRiders = [];
+    let lastUpdate = "";
     
     const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
     let currentClass = 'SuperTwins';
@@ -260,21 +260,33 @@
     fetch('riders.json')
         .then(response => response.json())
         .then(data => {
-            // Use scraped data if valid, otherwise use fallbacks
-            superTwinsRiders = (data.SuperTwins && data.SuperTwins.length > 2) ? data.SuperTwins : fallbackSuperTwins;
-            singlesRiders = (data.Singles && data.Singles.length > 2) ? data.Singles : fallbackSingles;
-            
-            // Display the timestamp
-            const updateText = data.last_updated ? `List Updated: ${data.last_updated}` : "Using Fallback List";
-            document.getElementById('results').innerHTML = `<p style="font-size:10px; color:#666; text-align:center;">${updateText}</p>`;
-            
+            // Check if scraped data is valid (not null and not an error string)
+            const stValid = data.SuperTwins && data.SuperTwins.length > 0 && !data.SuperTwins[0].includes("Error");
+            const siValid = data.Singles && data.Singles.length > 0 && !data.Singles[0].includes("Error");
+
+            superTwinsRiders = stValid ? data.SuperTwins : fallbackST;
+            singlesRiders = siValid ? data.Singles : fallbackSI;
+            lastUpdate = data.last_updated || "Manual Fallback Mode";
+
             generateRiderInputs();
+            updateTimestamp();
         })
         .catch(err => {
-            superTwinsRiders = fallbackSuperTwins;
-            singlesRiders = fallbackSingles;
+            superTwinsRiders = fallbackST;
+            singlesRiders = fallbackSI;
+            lastUpdate = "Offline / Fallback Mode";
             generateRiderInputs();
+            updateTimestamp();
         });
+
+    function updateTimestamp() {
+        const resDiv = document.getElementById('results');
+        // Prepend the timestamp so it stays visible
+        const timeHTML = `<p style="font-size:10px; color:#666; text-align:center; margin-top:10px;">Data Pull: ${lastUpdate}</p>`;
+        if (!resDiv.innerHTML.includes("Data Pull:")) {
+            resDiv.innerHTML = timeHTML + resDiv.innerHTML;
+        }
+    }
 
     function generateRiderInputs() {
         const riderList = currentClass === 'Singles' ? singlesRiders : superTwinsRiders;
@@ -294,7 +306,7 @@
                         ${[1, 2, 3].map(raceNum => `
                             <div class="input-group">
                                 <label>R${raceNum}</label>
-                                <select class="pos-input" id="r${raceNum}-${id=i}" onchange="updateLive(${i}, this)">
+                                <select class="pos-input" id="r${raceNum}-${i}" onchange="updateLive(${i}, this)">
                                     <option value="0">-</option>
                                     ${Array.from({length: 17}, (_, idx) => `<option value="${idx+1}">${idx+1}</option>`).join('')}
                                 </select>
@@ -365,4 +377,5 @@
 </script>
 </body>
 </html>
+
 
