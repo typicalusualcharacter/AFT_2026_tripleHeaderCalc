@@ -247,20 +247,19 @@
 </div>
 
 <script>
+    // Updated Fallback Lists
     const fallbackST = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
     const fallbackSI = ["Tom Drane", "Bradon Pfanders", "Chase Saathoff", "Trevor Brunner", "Kage Tadman", "Justin Jones", "Jack Brucks", "Logan Eisenhard", "Tarren Santero", "Ryder Reese", "Jordan Beaulac", "Jared Lowe", "Jaymes Arnaiz", "Walker Porter", "Travis Petton", "Skylar Sentell", "Aaden Savage", "Evan Kelleher", "Matt Beland", "Jordan Jean", "Bronson Pearce"];
 
     let superTwinsRiders = [];
     let singlesRiders = [];
     let lastUpdate = "";
-    
-    const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
     let currentClass = 'SuperTwins';
 
-    fetch('riders.json')
+    // Fetching with a timestamp to prevent browser caching differences
+    fetch(`riders.json?t=${new Date().getTime()}`)
         .then(response => response.json())
         .then(data => {
-            // Check if scraped data is valid (not null and not an error string)
             const stValid = data.SuperTwins && data.SuperTwins.length > 0 && !data.SuperTwins[0].includes("Error");
             const siValid = data.Singles && data.Singles.length > 0 && !data.Singles[0].includes("Error");
 
@@ -279,42 +278,14 @@
             updateTimestamp();
         });
 
+    // In your HTML Sidebar, update the button text to "?"
+    // <button class="side-btn info-btn" onclick="toggleModal()">?</button>
+
     function updateTimestamp() {
         const resDiv = document.getElementById('results');
-        // Prepend the timestamp so it stays visible
         const timeHTML = `<p style="font-size:10px; color:#666; text-align:center; margin-top:10px;">Data Pull: ${lastUpdate}</p>`;
-        if (!resDiv.innerHTML.includes("Data Pull:")) {
+        if (resDiv && !resDiv.innerHTML.includes("Data Pull:")) {
             resDiv.innerHTML = timeHTML + resDiv.innerHTML;
-        }
-    }
-
-    function generateRiderInputs() {
-        const riderList = currentClass === 'Singles' ? singlesRiders : superTwinsRiders;
-        const container = document.getElementById('riderInputs');
-        container.innerHTML = ''; 
-        for (let i = 1; i <= 5; i++) {
-            container.innerHTML += `
-                <div class="rider-card">
-                    <div class="rider-header">
-                        <select class="rider-name-select" id="rider-${i}">
-                            <option value="">SELECT RIDER ${i}</option>
-                            ${riderList.map(r => `<option value="${r}">${r}</option>`).join('')}
-                        </select>
-                        <span class="live-points" id="live-${i}">0 pts</span>
-                    </div>
-                    <div class="grid">
-                        ${[1, 2, 3].map(raceNum => `
-                            <div class="input-group">
-                                <label>R${raceNum}</label>
-                                <select class="pos-input" id="r${raceNum}-${i}" onchange="updateLive(${i}, this)">
-                                    <option value="0">-</option>
-                                    ${Array.from({length: 17}, (_, idx) => `<option value="${idx+1}">${idx+1}</option>`).join('')}
-                                </select>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
         }
     }
 
@@ -377,5 +348,6 @@
 </script>
 </body>
 </html>
+
 
 
