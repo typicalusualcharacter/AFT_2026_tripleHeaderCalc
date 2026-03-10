@@ -14,29 +14,36 @@ def get_riders(url):
         response = requests.get(url, headers=headers, timeout=15)
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Target only the cells within the table body to avoid headers
-        table = soup.find('table')
-        if not table: return None
-        
-        tbody = table.find('tbody')
-        cells = tbody.find_all('td', class_=['rider', 'rider-name', 'views-field-field-rider-name']) if tbody else []
-        
+        # The 2026 standings use a table with a specific structure
+        # We find the table, then look for rows, then the rider column
         names = []
-        for cell in cells:
-            name = cell.get_text(strip=True)
-            # Filter out known header text or empty strings
-            if name and name.lower() != "rider(s)" and name not in names:
-                names.append(name)
+        rows = soup.find_all('tr')
         
+        for row in rows:
+            # Look for the 'rider' or 'rider-name' class in the cell
+            rider_cell = row.find('td', class_=['rider', 'rider-name', 'views-field-field-rider-name'])
+            if rider_cell:
+                # Get the link text (the name)
+                link = rider_cell.find('a')
+                name = link.get_text(strip=True) if link else rider_cell.get_text(strip=True)
+                
+                if name and name.lower() != "rider(s)" and name not in names:
+                    names.append(name)
+        
+        print(f"Found {len(names)} riders for {url}")
         return names if names else None
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error scraping {url}: {e}")
         return None
+
+# Execute
+st_list = get_riders(urls["SuperTwins"])
+si_list = get_riders(urls["Singles"])
 
 data = {
     "last_updated": datetime.now().strftime("%m/%d/%Y %I:%M %p"),
-    "SuperTwins": get_riders(urls["SuperTwins"]),
-    "Singles": get_riders(urls["Singles"])
+    "SuperTwins": st_list,
+    "Singles": si_list
 }
 
 with open('riders.json', 'w') as f:
