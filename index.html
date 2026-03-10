@@ -5,214 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="apple-touch-icon" href="TRIPchallenge_2.png">
-    
+    <link rel="apple-touch-icon" href="TRIPchallenge_3.png">
     <title>AFT TC 2026</title>
     <style>
-        :root {
-            --primary: #d32f2f;
-            --dark: #050505;
-            --card-odd: #1a1a1a;
-            --card-even: #252525;
-            --gold: #FFD700;
-            --silver: #E0E0E0;
-            --bronze: #CD7F32;
-        }
-        body {
-            font-family: -apple-system, system-ui, sans-serif;
-            background-color: var(--dark);
-            color: white;
-            margin: 0;
-            display: flex;
-            overflow-x: hidden;
-        }
-        
-        .main-content {
-            flex: 1;
-            padding: 10px;
-            padding-right: 75px; 
-            padding-top: 10px;
-        }
-
-        .header-logo {
-            display: block;
-            margin: 0 auto 15px auto;
-            max-width: 270px; 
-            height: auto;
-        }
-
-        .tab-container {
-            display: flex;
-            width: 100%;
-            margin-bottom: 20px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #111;
-        }
-        .tab-container button {
-            flex: 1;
-            background-color: transparent;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-            opacity: 0.5;
-        }
-        .tab-container button.active {
-            background-color: #222;
-            opacity: 1;
-            border-bottom: 4px solid var(--primary);
-        }
-        
-        .tab-img {
-            max-height: 40px;
-            max-width: 100%;
-            object-fit: contain;
-        }
-
-        .sidebar {
-            position: fixed;
-            right: 0; top: 0; bottom: 0;
-            width: 70px;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 10px 5px;
-            border-left: 1px solid #333;
-            z-index: 100;
-        }
-
-        .rider-card {
-            border-radius: 8px;
-            padding: 12px 10px;
-            margin-bottom: 6px;
-            border: 1px solid #333;
-        }
+        :root { --primary: #d32f2f; --dark: #050505; --card-odd: #1a1a1a; --card-even: #252525; --gold: #FFD700; --silver: #E0E0E0; --bronze: #CD7F32; }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--dark); color: white; margin: 0; display: flex; overflow-x: hidden; }
+        .main-content { flex: 1; padding: 10px; padding-right: 75px; padding-top: 10px; }
+        .header-logo { display: block; margin: 0 auto 15px auto; max-width: 270px; height: auto; }
+        .tab-container { display: flex; width: 100%; margin-bottom: 20px; border: 1px solid #333; border-radius: 8px; overflow: hidden; background-color: #111; }
+        .tab-container button { flex: 1; background-color: transparent; border: none; padding: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.5; }
+        .tab-container button.active { background-color: #222; opacity: 1; border-bottom: 4px solid var(--primary); }
+        .tab-img { max-height: 40px; max-width: 100%; object-fit: contain; }
+        .sidebar { position: fixed; right: 0; top: 0; bottom: 0; width: 70px; background: #000; display: flex; flex-direction: column; gap: 10px; padding: 10px 5px; border-left: 1px solid #333; z-index: 100; }
+        .rider-card { border-radius: 8px; padding: 12px 10px; margin-bottom: 6px; border: 1px solid #333; }
         .rider-card:nth-child(odd) { background: var(--card-odd); }
         .rider-card:nth-child(even) { background: var(--card-even); border-left: 4px solid #444; }
-        
-        .rider-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .rider-name-select {
-            width: 68%;
-            font-size: 1.1rem;
-            font-weight: bold;
-            background: #000;
-            color: white;
-            border: 1px solid #555;
-            padding: 6px;
-            border-radius: 4px;
-        }
-        .live-points {
-            font-weight: 900;
-            color: #fff;
-            font-size: 1rem;
-            background: var(--primary);
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-        }
-        .input-group label {
-            display: block;
-            font-size: 0.75rem;
-            color: #ccc;
-            text-align: center;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
-        select.pos-input {
-            width: 100%;
-            padding: 10px 2px;
-            font-size: 1.2rem;
-            background: #333;
-            color: white;
-            border: 2px solid #555;
-            border-radius: 6px;
-            text-align: center;
-            text-align-last: center;
-        }
-
-        .pos-gold { background-color: var(--gold) !important; color: #000 !important; font-weight: bold; }
-        .pos-silver { background-color: var(--silver) !important; color: #000 !important; font-weight: bold; }
-        .pos-bronze { background-color: var(--bronze) !important; color: #fff !important; font-weight: bold; }
-
+        .rider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .rider-name-select { width: 68%; font-size: 1.1rem; font-weight: bold; background: #000; color: white; border: 1px solid #555; padding: 6px; border-radius: 4px; }
+        .live-points { font-weight: 900; color: #fff; font-size: 1rem; background: var(--primary); padding: 4px 8px; border-radius: 4px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .input-group label { display: block; font-size: 0.75rem; color: #ccc; text-align: center; margin-bottom: 4px; font-weight: bold; }
+        select.pos-input { width: 100%; padding: 10px 2px; font-size: 1.2rem; background: #333; color: white; border: 2px solid #555; border-radius: 6px; text-align: center; }
+        .pos-gold { background-color: var(--gold) !important; color: #000 !important; }
+        .pos-silver { background-color: var(--silver) !important; color: #000 !important; }
+        .pos-bronze { background-color: var(--bronze) !important; color: #fff !important; }
         .results-area { margin-top: 20px; border-top: 3px solid var(--primary); padding-top: 15px; padding-bottom: 40px;}
-        .res-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px;
-            margin-bottom: 5px;
-            border-radius: 6px;
-            font-size: 1.05rem;
-            font-weight: bold;
-        }
+        .res-row { display: flex; justify-content: space-between; padding: 12px; margin-bottom: 5px; border-radius: 6px; font-size: 1.05rem; font-weight: bold; }
         .res-row.gold { background: var(--gold); color: #000; }
         .res-row.silver { background: var(--silver); color: #000; }
         .res-row.bronze { background: var(--bronze); color: #fff; }
         .res-row.standard { background: #333; color: #fff; }
-
-        .side-btn {
-            width: 100%;
-            height: 70px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 1.1;
-        }
+        .side-btn { width: 100%; height: 70px; border: none; border-radius: 8px; font-weight: 900; font-size: 0.9rem; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; text-align: center; }
         .calc-btn { background: #2e7d32; color: white; border-bottom: 5px solid #1b5e20; }
         .reset-btn { background: #b71c1c; color: white; border-bottom: 5px solid #7f0000; }
         .info-btn { background: #444; color: white; border-bottom: 5px solid #222; font-size: 1.5rem; }
-
-        #infoModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-        }
-        .modal-content img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-        .close-modal {
-            position: absolute;
-            top: -40px; right: 0;
-            color: white;
-            font-size: 30px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        #infoModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+        .modal-content { position: relative; max-width: 90%; max-height: 90%; }
+        .modal-content img { width: 100%; height: auto; border-radius: 8px; }
+        .close-modal { position: absolute; top: -40px; right: 0; color: white; font-size: 30px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -226,16 +56,14 @@
 
 <div class="main-content">
     <img src="triple_challenge.png" alt="AFT Triple Challenge Logo" class="header-logo">
-    
     <div class="tab-container">
         <button id="superTwinsTab" class="active" onclick="switchClass('SuperTwins')">
-            <img src="MISSION_AFT_SUPERTWINS_2024.png" class="tab-img" alt="SuperTwins">
+            <img src="MISSION_AFT_SUPERTWINS_2024.png" class="tab-img">
         </button>
         <button id="singlesTab" onclick="switchClass('Singles')">
-            <img src="Kicker-AFT-Singles-Logo.png" class="tab-img" alt="Singles">
+            <img src="Kicker-AFT-Singles-Logo.png" class="tab-img">
         </button>
     </div>
-    
     <div id="riderInputs"></div>
     <div id="results" class="results-area"></div>
 </div>
@@ -243,76 +71,91 @@
 <div class="sidebar">
     <button class="side-btn calc-btn" onclick="calculateResults()">CALC<br>RANK</button>
     <button class="side-btn reset-btn" onclick="resetAll()">CLR<br>ALL</button>
-    <button class="side-btn info-btn" onclick="toggleModal()">i</button>
+    <button class="side-btn info-btn" onclick="toggleModal()">?</button>
 </div>
 
 <script>
-    // Updated Fallback Lists
+    // 1. Updated Fallback Lists (Ranks from standings)
     const fallbackST = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
     const fallbackSI = ["Tom Drane", "Bradon Pfanders", "Chase Saathoff", "Trevor Brunner", "Kage Tadman", "Justin Jones", "Jack Brucks", "Logan Eisenhard", "Tarren Santero", "Ryder Reese", "Jordan Beaulac", "Jared Lowe", "Jaymes Arnaiz", "Walker Porter", "Travis Petton", "Skylar Sentell", "Aaden Savage", "Evan Kelleher", "Matt Beland", "Jordan Jean", "Bronson Pearce"];
 
-    let superTwinsRiders = [];
-    let singlesRiders = [];
-    let lastUpdate = "";
+    let superTwinsRiders = [...fallbackST];
+    let singlesRiders = [...fallbackSI];
+    const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
     let currentClass = 'SuperTwins';
 
-    // Fetching with a timestamp to prevent browser caching differences
-    // Force fresh data by adding a timestamp to the URL
-    fetch(`riders.json?nocache=${new Date().getTime()}`)
-        .then(response => response.json())
-        .then(data => {
-            // Validation: Ensure the data isn't null and has actual names
-            const stValid = data.SuperTwins && Array.isArray(data.SuperTwins) && data.SuperTwins.length > 0;
-            const siValid = data.Singles && Array.isArray(data.Singles) && data.Singles.length > 0;
-    
-            superTwinsRiders = stValid ? data.SuperTwins : fallbackST;
-            singlesRiders = siValid ? data.Singles : fallbackSI;
-            lastUpdate = data.last_updated || "Fallback Mode";
-    
-            generateRiderInputs();
-            updateTimestamp();
-        })
-        .catch(err => {
-            superTwinsRiders = fallbackST;
-            singlesRiders = fallbackSI;
-            lastUpdate = "Offline / Fallback Mode";
-            generateRiderInputs();
-            updateTimestamp();
-        });
+    // 2. Immediate draw so the page isn't blank
+    window.onload = () => {
+        generateRiderInputs();
+        tryFetchData();
+    };
 
-    // In your HTML Sidebar, update the button text to "?"
-    // <button class="side-btn info-btn" onclick="toggleModal()">?</button>
+    function tryFetchData() {
+        fetch(`riders.json?t=${Date.now()}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.SuperTwins && data.SuperTwins.length > 5) {
+                    superTwinsRiders = data.SuperTwins;
+                    singlesRiders = data.Singles;
+                    generateRiderInputs();
+                    const ts = data.last_updated || "Live";
+                    document.getElementById('results').innerHTML = `<p style="font-size:10px; color:#666; text-align:center;">Pull: ${ts}</p>`;
+                }
+            })
+            .catch(e => console.log("Using fallbacks"));
+    }
 
-    function updateTimestamp() {
-        const resDiv = document.getElementById('results');
-        const timeHTML = `<p style="font-size:10px; color:#666; text-align:center; margin-top:10px;">Data Pull: ${lastUpdate}</p>`;
-        if (resDiv && !resDiv.innerHTML.includes("Data Pull:")) {
-            resDiv.innerHTML = timeHTML + resDiv.innerHTML;
+    function generateRiderInputs() {
+        const list = currentClass === 'Singles' ? singlesRiders : superTwinsRiders;
+        const container = document.getElementById('riderInputs');
+        container.innerHTML = ''; 
+        for (let i = 1; i <= 5; i++) {
+            container.innerHTML += `
+                <div class="rider-card">
+                    <div class="rider-header">
+                        <select class="rider-name-select" id="rider-${i}">
+                            <option value="">SELECT RIDER ${i}</option>
+                            ${list.map(r => `<option value="${r}">${r}</option>`).join('')}
+                        </select>
+                        <span class="live-points" id="live-${i}">0 pts</span>
+                    </div>
+                    <div class="grid">
+                        ${[1,2,3].map(n => `
+                            <div class="input-group">
+                                <label>R${n}</label>
+                                <select class="pos-input" id="r${n}-${i}" onchange="updateLive(${i}, this)">
+                                    <option value="0">-</option>
+                                    ${Array.from({length:17},(_,x)=>`<option value="${x+1}">${x+1}</option>`).join('')}
+                                </select>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
         }
     }
 
-    function switchClass(className) {
-        currentClass = className;
-        document.getElementById('superTwinsTab').classList.toggle('active', className === 'SuperTwins');
-        document.getElementById('singlesTab').classList.toggle('active', className === 'Singles');
+    function switchClass(c) {
+        currentClass = c;
+        document.getElementById('superTwinsTab').classList.toggle('active', c === 'SuperTwins');
+        document.getElementById('singlesTab').classList.toggle('active', c === 'Singles');
         generateRiderInputs();
         document.getElementById('results').innerHTML = '';
     }
 
     function toggleModal() {
-        const modal = document.getElementById('infoModal');
-        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        const m = document.getElementById('infoModal');
+        m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    function updateLive(id, element) {
-        element.classList.remove('pos-gold', 'pos-silver', 'pos-bronze');
-        if (element.value == "1") element.classList.add('pos-gold');
-        if (element.value == "2") element.classList.add('pos-silver');
-        if (element.value == "3") element.classList.add('pos-bronze');
+    function updateLive(id, el) {
+        el.classList.remove('pos-gold', 'pos-silver', 'pos-bronze');
+        if (el.value == "1") el.classList.add('pos-gold');
+        if (el.value == "2") el.classList.add('pos-silver');
+        if (el.value == "3") el.classList.add('pos-bronze');
         const p1 = parseInt(document.getElementById(`r1-${id}`).value);
         const p2 = parseInt(document.getElementById(`r2-${id}`).value);
         const p3 = parseInt(document.getElementById(`r3-${id}`).value);
-        const total = (basePoints[p1] || 0) + ((basePoints[p2] || 0) * 2) + ((basePoints[p3] || 0) * 3);
+        const total = (basePoints[p1]||0) + ((basePoints[p2]||0)*2) + ((basePoints[p3]||0)*3);
         document.getElementById(`live-${id}`).innerText = `${total} pts`;
     }
 
@@ -324,33 +167,18 @@
             const p1 = parseInt(document.getElementById(`r1-${i}`).value);
             const p2 = parseInt(document.getElementById(`r2-${i}`).value);
             const p3 = parseInt(document.getElementById(`r3-${i}`).value);
-            results.push({
-                name: name,
-                total: (basePoints[p1] || 0) + ((basePoints[p2] || 0) * 2) + ((basePoints[p3] || 0) * 3),
-                r3Finish: p3 === 0 ? 99 : p3
-            });
+            results.push({ name, total: (basePoints[p1]||0)+((basePoints[p2]||0)*2)+((basePoints[p3]||0)*3), r3: p3||99 });
         }
-        results.sort((a, b) => b.total !== a.total ? b.total - a.total : a.r3Finish - b.r3Finish);
-        const resDiv = document.getElementById('results');
-        let html = `<h3 style="text-align:center; color:white; margin:0 0 10px 0; text-transform: uppercase; font-style: italic;">Unofficial Final ${currentClass} Rank</h3>`;
+        results.sort((a,b) => b.total - a.total || a.r3 - b.r3);
+        let h = `<h3 style="text-align:center; color:white; margin-bottom:10px;">Unofficial Rank</h3>`;
         results.forEach((r, idx) => {
-            let medalClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : 'standard';
-            html += `<div class="res-row ${medalClass}"><span>${idx+1}. ${r.name}</span><span>${r.total} pts</span></div>`;
+            let m = idx===0?'gold':idx===1?'silver':idx===2?'bronze':'standard';
+            h += `<div class="res-row ${m}"><span>${idx+1}. ${r.name}</span><span>${r.total} pts</span></div>`;
         });
-        resDiv.innerHTML = html;
-        resDiv.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('results').innerHTML = h;
     }
 
-    function resetAll() {
-        if(confirm("Wipe all data for " + currentClass + "?")) {
-            generateRiderInputs();
-            document.getElementById('results').innerHTML = '';
-        }
-    }
+    function resetAll() { if(confirm("Clear?")) { generateRiderInputs(); document.getElementById('results').innerHTML = ''; } }
 </script>
 </body>
 </html>
-
-
-
-
