@@ -247,27 +247,32 @@
 </div>
 
 <script>
+    // FALLBACK LISTS (Used if the scraper fails)
+    const fallbackSuperTwins = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Briar Bauman", "Brandon Robinson", "Sammy Halbert", "Aidan RoosEvans", "Jarod Vanderkooi", "Bronson Bauman", "Kolby Carlile", "Sam Lowe"];
+    const fallbackSingles = ["Tom Drane", "Chase Saathoff", "Trevor Brunner", "Jack Brucks", "Logan Eisenhard", "Justin Jones", "Jordan Beaulac", "Bradon Pfanders", "Kage Tadman", "Ryder Reese", "Jaymes Arnaiz", "Travis Petton"];
+
     let superTwinsRiders = [];
     let singlesRiders = [];
     
     const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
     let currentClass = 'SuperTwins';
 
-    // Fetch automated names from riders.json
     fetch('riders.json')
-        .then(response => {
-            if (!response.ok) throw new Error("File not found");
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            superTwinsRiders = data.SuperTwins;
-            singlesRiders = data.Singles;
+            // Use scraped data if valid, otherwise use fallbacks
+            superTwinsRiders = (data.SuperTwins && data.SuperTwins.length > 2) ? data.SuperTwins : fallbackSuperTwins;
+            singlesRiders = (data.Singles && data.Singles.length > 2) ? data.Singles : fallbackSingles;
+            
+            // Display the timestamp
+            const updateText = data.last_updated ? `List Updated: ${data.last_updated}` : "Using Fallback List";
+            document.getElementById('results').innerHTML = `<p style="font-size:10px; color:#666; text-align:center;">${updateText}</p>`;
+            
             generateRiderInputs();
         })
         .catch(err => {
-            // Fallback list if the scraper hasn't run yet
-            superTwinsRiders = ["Scraping riders...", "Please run GitHub Action"];
-            singlesRiders = ["Scraping riders...", "Please run GitHub Action"];
+            superTwinsRiders = fallbackSuperTwins;
+            singlesRiders = fallbackSingles;
             generateRiderInputs();
         });
 
@@ -289,7 +294,7 @@
                         ${[1, 2, 3].map(raceNum => `
                             <div class="input-group">
                                 <label>R${raceNum}</label>
-                                <select class="pos-input" id="r${raceNum}-${i}" onchange="updateLive(${i}, this)">
+                                <select class="pos-input" id="r${raceNum}-${id=i}" onchange="updateLive(${i}, this)">
                                     <option value="0">-</option>
                                     ${Array.from({length: 17}, (_, idx) => `<option value="${idx+1}">${idx+1}</option>`).join('')}
                                 </select>
@@ -360,3 +365,4 @@
 </script>
 </body>
 </html>
+
