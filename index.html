@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="TRIPchallenge_3.png">
+    
+    <link rel="apple-touch-icon" href="TRIPchallenge_2.png">
+    
     <title>AFT TC 2026</title>
     <style>
         :root {
@@ -241,21 +243,38 @@
 <div class="sidebar">
     <button class="side-btn calc-btn" onclick="calculateResults()">CALC<br>RANK</button>
     <button class="side-btn reset-btn" onclick="resetAll()">CLR<br>ALL</button>
-    <button class="side-btn info-btn" onclick="toggleModal()">?</button>
+    <button class="side-btn info-btn" onclick="toggleModal()">i</button>
 </div>
 
 <script>
-    const superTwinsRiders = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
-    const singlesRiders = ["Tom Drane", "Bradon Pfanders", "Chase Saathoff", "Trevor Brunner", "Kage Tadman", "Justin Jones", "Jack Brucks", "Logan Eisenhard", "Tarren Santero", "Ryder Reese", "Jordan Beaulac", "Jared Lowe", "Jaymes Arnaiz", "Walker Porter", "Travis Petton", "Skylar Sentell", "Aaden Savage", "Evan Kelleher", "Matt Beland", "Jordan Jean", "Bronson Pearce"];
+    let superTwinsRiders = [];
+    let singlesRiders = [];
     
     const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
     let currentClass = 'SuperTwins';
+
+    // Fetch automated names from riders.json
+    fetch('riders.json')
+        .then(response => {
+            if (!response.ok) throw new Error("File not found");
+            return response.json();
+        })
+        .then(data => {
+            superTwinsRiders = data.SuperTwins;
+            singlesRiders = data.Singles;
+            generateRiderInputs();
+        })
+        .catch(err => {
+            // Fallback list if the scraper hasn't run yet
+            superTwinsRiders = ["Scraping riders...", "Please run GitHub Action"];
+            singlesRiders = ["Scraping riders...", "Please run GitHub Action"];
+            generateRiderInputs();
+        });
 
     function generateRiderInputs() {
         const riderList = currentClass === 'Singles' ? singlesRiders : superTwinsRiders;
         const container = document.getElementById('riderInputs');
         container.innerHTML = ''; 
-        // Reverted back to 5 rider slots
         for (let i = 1; i <= 5; i++) {
             container.innerHTML += `
                 <div class="rider-card">
@@ -338,9 +357,6 @@
             document.getElementById('results').innerHTML = '';
         }
     }
-
-    generateRiderInputs();
 </script>
 </body>
 </html>
-
