@@ -257,16 +257,18 @@
     let currentClass = 'SuperTwins';
 
     // Fetching with a timestamp to prevent browser caching differences
-    fetch(`riders.json?t=${new Date().getTime()}`)
+    // Force fresh data by adding a timestamp to the URL
+    fetch(`riders.json?nocache=${new Date().getTime()}`)
         .then(response => response.json())
         .then(data => {
-            const stValid = data.SuperTwins && data.SuperTwins.length > 0 && !data.SuperTwins[0].includes("Error");
-            const siValid = data.Singles && data.Singles.length > 0 && !data.Singles[0].includes("Error");
-
+            // Validation: Ensure the data isn't null and has actual names
+            const stValid = data.SuperTwins && Array.isArray(data.SuperTwins) && data.SuperTwins.length > 0;
+            const siValid = data.Singles && Array.isArray(data.Singles) && data.Singles.length > 0;
+    
             superTwinsRiders = stValid ? data.SuperTwins : fallbackST;
             singlesRiders = siValid ? data.Singles : fallbackSI;
-            lastUpdate = data.last_updated || "Manual Fallback Mode";
-
+            lastUpdate = data.last_updated || "Fallback Mode";
+    
             generateRiderInputs();
             updateTimestamp();
         })
@@ -348,6 +350,7 @@
 </script>
 </body>
 </html>
+
 
 
 
