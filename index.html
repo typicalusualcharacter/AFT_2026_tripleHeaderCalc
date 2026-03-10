@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="https://www.americanflattrack.com/themes/amaproracing/assets/images/logos/progressive-logo.png">
-    <title>AFT TripChallenge Calc 2026</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="image_2.png">
+    <title>AFT TC 2026</title>
     <style>
         :root {
             --primary: #d32f2f;
@@ -29,18 +29,46 @@
             flex: 1;
             padding: 10px;
             padding-right: 75px; 
+            padding-top: 20px;
         }
 
+        /* Logo Styling */
         .header-logo {
             display: block;
-            margin: 10px auto 20px auto;
-            max-width: 270px; /* 1.5x scale */
+            margin: 0 auto 15px auto;
+            max-width: 100%;
             height: auto;
+        }
+
+        /* Tab Styling */
+        .tab-container {
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .tab-container button {
+            flex: 1;
+            background-color: #111;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .tab-container button.active {
+            background-color: var(--primary);
         }
 
         .sidebar {
             position: fixed;
-            right: 0; top: 0; bottom: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
             width: 70px;
             background: #000;
             display: flex;
@@ -51,6 +79,7 @@
             z-index: 100;
         }
 
+        /* Rider Cards with Banding */
         .rider-card {
             border-radius: 8px;
             padding: 12px 10px;
@@ -109,10 +138,12 @@
             text-align: center;
         }
 
+        /* Podium Colors */
         .pos-gold { background-color: var(--gold) !important; color: #000 !important; font-weight: bold; }
         .pos-silver { background-color: var(--silver) !important; color: #000 !important; font-weight: bold; }
         .pos-bronze { background-color: var(--bronze) !important; color: #fff !important; font-weight: bold; }
 
+        /* Standings Results */
         .results-area { margin-top: 20px; border-top: 3px solid var(--primary); padding-top: 15px; padding-bottom: 40px;}
         .res-row {
             display: flex;
@@ -128,6 +159,7 @@
         .res-row.bronze { background: var(--bronze); color: #fff; }
         .res-row.standard { background: #333; color: #fff; }
 
+        /* Sidebar Buttons */
         .side-btn {
             width: 100%;
             height: 70px;
@@ -150,7 +182,13 @@
 <body>
 
 <div class="main-content">
-    <img src="https://www.americanflattrack.com/themes/amaproracing/assets/images/logos/progressive-logo.png" alt="AFT Logo" class="header-logo">
+    <img src="image_2.png" alt="AFT Triple Challenge Logo" class="header-logo">
+    
+    <div class="tab-container">
+        <button id="superTwinsTab" class="active" onclick="switchClass('SuperTwins')">SuperTwins</button>
+        <button id="singlesTab" onclick="switchClass('Singles')">Singles</button>
+    </div>
+    
     <div id="riderInputs"></div>
     <div id="results" class="results-area"></div>
 </div>
@@ -161,18 +199,33 @@
 </div>
 
 <script>
-    const riders = ["Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson", "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley", "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price", "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"];
+    // Rider lists
+    const superTwinsRiders = [
+        "Kody Kopp", "Dallas Daniels", "Davis Fisher", "Henry Wiles", "Brandon Robinson",
+        "Sammy Halbert", "Briar Bauman", "Trent Lowe", "Ben Lowe", "Dan Bromley",
+        "Dalton Gauthier", "Logan Mcgrane", "Aidan RoosEvans", "Brandon Price",
+        "Evan Renshaw", "Chad Cose", "Billy Ross", "Cameron Smith", "Hunter Bauer", "Declan Bender"
+    ];
+    const singlesRiders = [
+        "Tom Drane", "Bradon Pfanders", "Chase Saathoff", "Trevor Brunner", "Kage Tadman",
+        "Justin Jones", "Jack Brucks", "Logan Eisenhard", "Tarren Santero", "Ryder Reese",
+        "Jordan Beaulac", "Jared Lowe", "Jaymes Arnaiz", "Walker Porter", "Travis Petton",
+        "Skylar Sentell", "Aaden Savage", "Evan Kelleher", "Matt Beland", "Jordan Jean", "Bronson Pearce"
+    ];
+    
     const basePoints = { 1: 23, 2: 19, 3: 16, 4: 14, 5: 13, 6: 12, 7: 11, 8: 10, 9: 9, 10: 8, 11: 7, 12: 6, 13: 5, 14: 4, 15: 3, 16: 2, 17: 1 };
 
-    function init() {
+    // Function to generate calculator inputs
+    function generateRiderInputs(riderList) {
         const container = document.getElementById('riderInputs');
+        container.innerHTML = ''; // Clear existing inputs
         for (let i = 1; i <= 5; i++) {
             container.innerHTML += `
                 <div class="rider-card">
                     <div class="rider-header">
                         <select class="rider-name-select" id="rider-${i}">
                             <option value="">SELECT RIDER ${i}</option>
-                            ${riders.map(r => `<option value="${r}">${r}</option>`).join('')}
+                            ${riderList.map(r => `<option value="${r}">${r}</option>`).join('')}
                         </select>
                         <span class="live-points" id="live-${i}">0 pts</span>
                     </div>
@@ -192,11 +245,39 @@
         }
     }
 
+    // Function to set the active tab
+    function setActiveClass(className) {
+        const superTwinsTab = document.getElementById('superTwinsTab');
+        const singlesTab = document.getElementById('singlesTab');
+        superTwinsTab.classList.remove('active');
+        singlesTab.classList.remove('active');
+        if (className === 'SuperTwins') {
+            superTwinsTab.classList.add('active');
+        } else if (className === 'Singles') {
+            singlesTab.classList.add('active');
+        }
+    }
+
+    // Function to switch between classes
+    function switchClass(className) {
+        // Simple way to handle resetting and loading correct list is via page reload
+        window.location.search = `class=${className}`;
+    }
+
+    function init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeClass = urlParams.get('class') || 'SuperTwins';
+        setActiveClass(activeClass);
+        const riderList = activeClass === 'Singles' ? singlesRiders : superTwinsRiders;
+        generateRiderInputs(riderList);
+    }
+
     function updateLive(id, element) {
         element.classList.remove('pos-gold', 'pos-silver', 'pos-bronze');
         if (element.value == "1") element.classList.add('pos-gold');
         if (element.value == "2") element.classList.add('pos-silver');
         if (element.value == "3") element.classList.add('pos-bronze');
+
         const p1 = parseInt(document.getElementById(`r1-${id}`).value);
         const p2 = parseInt(document.getElementById(`r2-${id}`).value);
         const p3 = parseInt(document.getElementById(`r3-${id}`).value);
@@ -205,19 +286,25 @@
     }
 
     function calculateResults() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeClass = urlParams.get('class') || 'SuperTwins';
         let results = [];
         for (let i = 1; i <= 5; i++) {
             const name = document.getElementById(`rider-${i}`).value;
             if (!name) continue;
-            const r1 = parseInt(document.getElementById(`r1-${i}`).value);
-            const r2 = parseInt(document.getElementById(`r2-${i}`).value);
-            const r3 = parseInt(document.getElementById(`r3-${i}`).value);
-            const score = (basePoints[r1] || 0) + ((basePoints[r2] || 0) * 2) + ((basePoints[r3] || 0) * 3);
-            results.push({ name: name, total: score, r3Finish: r3 === 0 ? 99 : r3 });
+            const p1 = parseInt(document.getElementById(`r1-${i}`).value);
+            const p2 = parseInt(document.getElementById(`r2-${i}`).value);
+            const p3 = parseInt(document.getElementById(`r3-${i}`).value);
+            results.push({
+                name: name,
+                total: (basePoints[p1] || 0) + ((basePoints[p2] || 0) * 2) + ((basePoints[p3] || 0) * 3),
+                r3Finish: p3 === 0 ? 99 : p3
+            });
         }
         results.sort((a, b) => b.total !== a.total ? b.total - a.total : a.r3Finish - b.r3Finish);
+
         const resDiv = document.getElementById('results');
-        let html = '<h3 style="text-align:center; color:white; margin:0 0 10px 0;">OVERALL TRIPLE CHALLENGE RANK</h3>';
+        let html = `<h3 style="text-align:center; color:white; margin:0 0 10px 0;">Final ${activeClass} Rank</h3>`;
         results.forEach((r, idx) => {
             let medalClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : 'standard';
             html += `<div class="res-row ${medalClass}"><span>${idx+1}. ${r.name}</span><span>${r.total} pts</span></div>`;
@@ -226,7 +313,10 @@
         resDiv.scrollIntoView({ behavior: 'smooth' });
     }
 
-    function resetAll() { if(confirm("Wipe all data?")) location.reload(); }
+    function resetAll() {
+        if(confirm("Wipe all data for this class?")) location.reload();
+    }
+
     init();
 </script>
 </body>
